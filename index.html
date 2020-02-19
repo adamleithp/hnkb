@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>repl.it</title>
+  <link href="./app.css" rel="stylesheet" type="text/css" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'helvetica neue';
+    }
+    a:focus {
+      box-shadow: 0 0 0 .2em rgba(3,102,214,.3)
+    }
+
+    body,
+    html {
+      margin: 0;
+    }
+
+    h1 {
+      margin: 0;
+
+      width: 100%;
+    }
+
+    .hide {
+      display:none;
+    }
+
+    .inner {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .inner * {
+      line-height: 1.3;
+    }
+/* 
+    .app {
+      display: flex;
+    } */
+
+    .header .inner,
+    .content .inner{
+      width: 100%;
+      padding: 2rem;
+    }
+    
+
+    .header {
+      height: 300px;
+      display: flex;
+      align-items: end;
+    }
+
+    .content {
+      /* background: #ccc; */
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: left;
+    }
+  </style>
+</head>
+
+<body>
+
+
+
+  <div class="app">
+    <div class="header">
+      <div class="inner">
+        <h1 id="story-title">Loading...</h1>
+      </div>
+    </div>
+    
+    <div class="content">
+      <div class="inner">
+        <a id="story-url" href="" class="hide">
+          Text...
+        </a>
+        <div id="story-text" class="hide" tabindex="0">
+          URL...
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+</body>
+<script src="./app.js"></script>
+
+</html>
