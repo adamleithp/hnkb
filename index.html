@@ -64,6 +64,35 @@
       justify-content: center;
       text-align: left;
     }
+
+    #story-comments {
+      padding: 0;
+    }
+    #story-comments > .story-comment {
+      border-bottom: 0;
+      padding-left: 0;
+    }
+
+    .list-comment {
+      list-style: none;
+      padding-left: 0;
+    }
+    .list-comment .list-comment {
+      border-left: 1px solid #a8a8a8;
+    }
+
+    .story-comment {
+      margin-bottom: 1em;
+      padding: .5rem 0 .5rem 2rem;
+    }
+    .story-comment > div {
+      margin-bottom: 2rem;
+    }
+    .story-comment > .story-comment {
+      padding-left: 3rem;
+    }
+
+
   </style>
 </head>
 
@@ -79,6 +108,7 @@
     </div>
     
     <div class="content">
+
       <div class="inner">
         <a id="story-url" href="" class="hide">
           Text...
@@ -86,6 +116,12 @@
         <div id="story-text" class="hide" tabindex="0">
           URL...
         </div>
+      </div>
+
+      <div class="inner">
+        <ul id="story-comments" class="list-comment">
+          
+        </ul>
       </div>
     </div>
   </div>
