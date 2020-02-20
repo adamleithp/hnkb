@@ -38,10 +38,14 @@
     .inner * {
       line-height: 1.3;
     }
-/* 
-    .app {
+
+    .logo {
+      padding: 1rem;
+      margin:0;
+      color: #ccc;
       display: flex;
-    } */
+      justify-content: space-between;
+    }
 
     .header .inner,
     .content .inner{
@@ -108,9 +112,15 @@
 
 <body>
 
-
-
   <div class="app">
+    <p class="logo">
+      <span>HACKERNEWS - Use the arrow keys (right,left, and down to open comments)</span>
+      <span>
+        <span id="story-count">0</span> /
+        <span id="story-total">425</span>
+      </span>
+    </p>
+
     <div class="header">
       <div class="inner">
         <h1 id="story-title">Loading...</h1>

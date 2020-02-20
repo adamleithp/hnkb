@@ -2,6 +2,8 @@ const loadingElement = document.getElementById('loading')
 const storyTitleElement = document.getElementById('story-title')
 const URL = document.getElementById('story-url')
 const TEXT = document.getElementById('story-text')
+const COUNT = document.getElementById('story-count')
+const TOTAL = document.getElementById('story-total')
 
 const getStory = async (storyID) => {  
   const story = await fetch(`https://hacker-news.firebaseio.com/v0/item/${storyID}.json?print=pretty`)
@@ -61,12 +63,10 @@ const renderComments = async (commentsArray, elementId = null) => {
     COMMENT_PARENT.innerHTML = '';
     return;
   }
+  
+  // Cancel render (need to cancel usually when switching stories. Comments keep trying to render.)
   if (!PARENT) return;
   
-
-
-
-
   let comments = await Promise.all(
     commentsArray.map(async commentID => {
       let commentsResponse = await getStory(commentID)
@@ -74,8 +74,6 @@ const renderComments = async (commentsArray, elementId = null) => {
     })
   )
 
-
-  
   // Handle HTML 
   comments.forEach((comment) => {
     // Validation
@@ -119,9 +117,9 @@ const renderCurrentStory = async (storyArray) => {
   const currentStoryID = storyArray[currentStoryIndex]
   const story = await getStory(currentStoryID)  
 
-  let hasText = story.text === undefined ? false : true;
-  let hasComments = story.kids && story.kids.length >= 1 ? true : false;
-  let content = hasText ? story.text : story.url
+  const hasText = story.text === undefined ? false : true;
+  const hasComments = story.kids && story.kids.length >= 1 ? true : false;
+  const content = hasText ? story.text : story.url
   
   // Set title html
   storyTitleElement.innerHTML = story.title;
@@ -153,10 +151,10 @@ const attachEventListeners = (storiesArray) => {
   const stories = storiesArray;
 
   document.onkeydown = (e) => {
-    let totalStoryIndex = localStorage.getItem('topStoriesLength');
-    let currentStoryIndex = localStorage.getItem('currentStoryIndex');
-    let currentStoryComments = localStorage.getItem('currentStoryComments');
-    let commentsAreRenderedFlag = localStorage.getItem('commentsAreRenderedFlag');
+    const totalStoryIndex = localStorage.getItem('topStoriesLength');
+    const currentStoryIndex = localStorage.getItem('currentStoryIndex');
+    const currentStoryComments = localStorage.getItem('currentStoryComments');
+    const commentsAreRenderedFlag = localStorage.getItem('commentsAreRenderedFlag');
     
     // LEFT
     if (e.keyCode == '37') {
@@ -168,6 +166,7 @@ const attachEventListeners = (storiesArray) => {
       localStorage.setItem('currentStoryIndex', newIndex);
       localStorage.removeItem('currentStoryComments');
       localStorage.removeItem('commentsAreRenderedFlag');
+      COUNT.innerHTML = newIndex;
       
       renderCurrentStory(stories);
       renderComments([]);
@@ -184,6 +183,7 @@ const attachEventListeners = (storiesArray) => {
       localStorage.removeItem('currentStoryComments');
       localStorage.removeItem('commentsAreRenderedFlag');
       localStorage.setItem('currentStoryIndex', newIndex);
+      COUNT.innerHTML = newIndex;
             
       renderCurrentStory(stories);
       renderComments([]);
@@ -205,23 +205,26 @@ const attachEventListeners = (storiesArray) => {
 
 const getTopStories = async (storyID) => {  
   const stories = await fetch(`https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty`)
-  .then((response) => {
-    return response.json();
-  })
-  .then((data) => {   
-    const currentStoryIndex = localStorage.getItem('currentStoryIndex');
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {   
+      const currentStoryIndex = localStorage.getItem('currentStoryIndex');
 
-    // If no index set, set to zero.
-    if (!currentStoryIndex) {
-      localStorage.setItem('currentStoryIndex', 0) 
-    }
-    
-    // Save data
-    localStorage.setItem('topStoriesLength', data.length);
-    localStorage.setItem('topStories', data);
-    
-    return data;
-  });
+      // If no index set, set to zero.
+      if (!currentStoryIndex) {
+        localStorage.setItem('currentStoryIndex', 0) 
+      }
+      
+      // Save data
+      localStorage.setItem('topStoriesLength', data.length);
+      localStorage.setItem('topStories', data);
+
+      COUNT.innerHTML = currentStoryIndex;
+      TOTAL.innerHTML = data.length;
+      
+      return data;
+    });
   
   return stories;
 }
@@ -233,5 +236,5 @@ const getTopStories = async (storyID) => {
 
   const storiesArray = await getTopStories()
   await renderCurrentStory(storiesArray)
-  const action = attachEventListeners(storiesArray)  
+  attachEventListeners(storiesArray)  
 })();
