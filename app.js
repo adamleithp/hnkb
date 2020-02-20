@@ -2,7 +2,6 @@ const loadingElement = document.getElementById('loading')
 const storyTitleElement = document.getElementById('story-title')
 const URL = document.getElementById('story-url')
 const TEXT = document.getElementById('story-text')
-// const COMMENTS = document.getElementById('story-comments')
 
 const getStory = async (storyID) => {  
   const story = await fetch(`https://hacker-news.firebaseio.com/v0/item/${storyID}.json?print=pretty`)
@@ -18,7 +17,7 @@ const getStory = async (storyID) => {
 
 const buildCommentHTML = (commentObject) => {
   let author = commentObject.by;
-  let text = commentObject.text;
+  let text = commentObject.text;  
 
   // Validation
   if (!commentObject) return false;
@@ -35,6 +34,8 @@ const buildCommentHTML = (commentObject) => {
   // create author text
   const child2 = document.createElement('div');
   child2.innerHTML = text;
+
+  // TODO: Fix first childnode of comment (it's always an invalid text string)
   
   parent.appendChild(child1)
   parent.appendChild(child2)
@@ -42,18 +43,21 @@ const buildCommentHTML = (commentObject) => {
   return parent;
 }
 
-const renderComments = async (commentsArray, elementId = null) => {
 
-  console.log('commentsArray======', typeof commentsArray);
-  
+
+
+
+
+const renderComments = async (commentsArray, elementId = null) => {    
   const COMMENT_PARENT = document.getElementById('story-comments');
 
-    
   // Remove comments if incoming array is empty.
-  if (!commentsArray && commentsArray.length === 0) {
+  if (commentsArray.length === 0) {    
     COMMENT_PARENT.innerHTML = '';
     return;
   }
+
+
 
   const isNested = elementId ? true : false;
   const PARENT = elementId ? document.getElementById(elementId) : COMMENT_PARENT;  
@@ -64,6 +68,8 @@ const renderComments = async (commentsArray, elementId = null) => {
       return commentsResponse;
     })
   )
+
+
   
   // Handle HTML 
   comments.forEach((comment) => {
@@ -135,11 +141,6 @@ const renderCurrentStory = async (storyArray) => {
   if (hasComments) {  
     localStorage.setItem('currentStoryComments', story.kids)
   }
-
-  // if (currentStoryComments) {
-  //   let array = currentStoryComments.split(",")
-  //   renderComments(array)
-  // }
 }
 
 
@@ -185,7 +186,7 @@ const attachEventListeners = (storiesArray) => {
 
 
     // DOWN (render comments)
-    else if (e.keyCode == '40' && !commentsAreRenderedFlag) {
+    else if (e.keyCode == '40' && currentStoryComments && !commentsAreRenderedFlag) {
       const commentsArray = currentStoryComments.split(',')
       
       renderComments(commentsArray);
@@ -223,6 +224,8 @@ const getTopStories = async (storyID) => {
 
 
 (async function() { 
+  localStorage.removeItem('commentsAreRenderedFlag');
+
   const storiesArray = await getTopStories()
   await renderCurrentStory(storiesArray)
   const action = attachEventListeners(storiesArray)  
