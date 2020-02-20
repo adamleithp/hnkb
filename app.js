@@ -15,6 +15,8 @@ const getStory = async (storyID) => {
   return story;
 }
 
+
+
 const buildCommentHTML = (commentObject) => {
   let author = commentObject.by;
   let text = commentObject.text;  
@@ -29,6 +31,7 @@ const buildCommentHTML = (commentObject) => {
   
   // create author p
   const child1 = document.createElement('p');
+  child1.classList.add('comment-author')
   child1.innerText = author;
   
   // create author text
@@ -49,18 +52,20 @@ const buildCommentHTML = (commentObject) => {
 
 
 const renderComments = async (commentsArray, elementId = null) => {    
+  const isNested = elementId ? true : false;
   const COMMENT_PARENT = document.getElementById('story-comments');
+  const PARENT = elementId ? document.getElementById(elementId) : COMMENT_PARENT;  
 
   // Remove comments if incoming array is empty.
   if (commentsArray.length === 0) {    
     COMMENT_PARENT.innerHTML = '';
     return;
   }
+  if (!PARENT) return;
+  
 
 
 
-  const isNested = elementId ? true : false;
-  const PARENT = elementId ? document.getElementById(elementId) : COMMENT_PARENT;  
 
   let comments = await Promise.all(
     commentsArray.map(async commentID => {

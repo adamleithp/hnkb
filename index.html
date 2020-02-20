@@ -65,6 +65,10 @@
       text-align: left;
     }
 
+      .inner--first {
+        border-bottom: 1px solid #000;
+      }
+
     #story-comments {
       padding: 0;
     }
@@ -84,13 +88,19 @@
     .story-comment {
       margin-bottom: 1em;
       padding: .5rem 0 .5rem 2rem;
-    }
-    .story-comment > div {
-      margin-bottom: 2rem;
+      min-width: 280px;
     }
     .story-comment > .story-comment {
       padding-left: 3rem;
     }
+
+    /* Inside comment */
+    .story-comment > div {
+      margin-bottom: 2rem;
+    }
+      .comment-author {
+        font-weight: bold;;
+      }
 
 
   </style>
@@ -109,7 +119,7 @@
     
     <div class="content">
 
-      <div class="inner">
+      <div class="inner inner--first">
         <a id="story-url" href="" class="hide">
           Text...
         </a>
