@@ -1,9 +1,12 @@
 const loadingElement = document.getElementById('loading')
-const storyTitleElement = document.getElementById('story-title')
+const TITLE = document.getElementById('story-title')
+const BODY = document.body;
+const RESET = document.getElementById('story-reset')
 const URL = document.getElementById('story-url')
 const TEXT = document.getElementById('story-text')
 const COUNT = document.getElementById('story-count')
 const TOTAL = document.getElementById('story-total')
+const TOGGLE = document.getElementById('toggle-darkmode')
 
 const getStory = async (storyID) => {  
   const story = await fetch(`https://hacker-news.firebaseio.com/v0/item/${storyID}.json?print=pretty`)
@@ -122,7 +125,7 @@ const renderCurrentStory = async (storyArray) => {
   const content = hasText ? story.text : story.url
   
   // Set title html
-  storyTitleElement.innerHTML = story.title;
+  TITLE.innerHTML = story.title;
 
   if (hasText) {
     URL.classList.add('hide')
@@ -139,6 +142,14 @@ const renderCurrentStory = async (storyArray) => {
     URL.href = content;
     URL.classList.remove('hide')
     URL.focus();
+
+    // Change Hash, removes browser url floaty box too.
+    window.location.hash = content;
+    
+    // Keep for the haxxers to copy.
+    console.log(
+      String(window.location.hash.split('#')[1])
+    )
   }
 
   if (hasComments) {  
@@ -166,7 +177,11 @@ const attachEventListeners = (storiesArray) => {
       localStorage.setItem('currentStoryIndex', newIndex);
       localStorage.removeItem('currentStoryComments');
       localStorage.removeItem('commentsAreRenderedFlag');
+      // Update count dom node
       COUNT.innerHTML = newIndex;
+      TITLE.innerHTML = "";
+      URL.innerHTML = "";
+      TEXT.innerHTML = "Loading...";
       
       renderCurrentStory(stories);
       renderComments([]);
@@ -178,12 +193,16 @@ const attachEventListeners = (storiesArray) => {
       if (currentStoryIndex >= totalStoryIndex - 1) {        
         return;
       }
-
+      
       let newIndex = Number(currentStoryIndex) + 1
       localStorage.removeItem('currentStoryComments');
       localStorage.removeItem('commentsAreRenderedFlag');
       localStorage.setItem('currentStoryIndex', newIndex);
+      // Update count dom node
       COUNT.innerHTML = newIndex;
+      TITLE.innerHTML = "";
+      URL.innerHTML = "";
+      TEXT.innerHTML = "Loading...";
             
       renderCurrentStory(stories);
       renderComments([]);
@@ -199,6 +218,26 @@ const attachEventListeners = (storiesArray) => {
       localStorage.setItem('commentsAreRenderedFlag', true);
     }
   };
+
+
+  // Story Reset
+  RESET.onmousedown = (e) => {
+    localStorage.setItem('currentStoryIndex', 0);
+    COUNT.innerHTML = 0;
+    renderCurrentStory(stories);
+    renderComments([]);
+  }
+
+  // Darkmode switch
+  TOGGLE.onmousedown = (e) => {
+    if (BODY.classList.contains('darkmode-on')) {
+      BODY.classList.remove('darkmode-on')
+      localStorage.setItem('darkmodeStatus', false);
+    } else {
+      BODY.classList.add('darkmode-on')
+      localStorage.setItem('darkmodeStatus', true);
+    }
+  }
 }
 
 
@@ -233,6 +272,16 @@ const getTopStories = async (storyID) => {
 
 (async function() { 
   localStorage.removeItem('commentsAreRenderedFlag');
+  const darkmodeStatus = localStorage.getItem('darkmodeStatus');  
+  let darkmode = (darkmodeStatus === 'true' ? true : false);
+  
+  if (darkmode) {    
+    BODY.classList.add('darkmode-on')
+    localStorage.setItem('darkmodeStatus', true);
+  } else {
+    BODY.classList.remove('darkmode-on')
+    localStorage.setItem('darkmodeStatus', false);
+  }
 
   const storiesArray = await getTopStories()
   await renderCurrentStory(storiesArray)

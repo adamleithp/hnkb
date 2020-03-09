@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>repl.it</title>
+  <title>HackerNews Slideshow</title>
   <link href="./app.css" rel="stylesheet" type="text/css" />
 
   <style>
@@ -19,6 +19,23 @@
     body,
     html {
       margin: 0;
+    }
+
+    .darkmode-on { 
+      background: #000;
+      color: #fff;
+    }
+    .darkmode-on .logo {
+      /* color:#2f2f2f; */
+    }
+    .darkmode-on a {
+      color:#5555b3;
+    }
+    .darkmode-on a:visited {
+      color:#212139;
+    }
+    #toggle-darkmode {
+      cursor: pointer;
     }
 
     h1 {
@@ -40,11 +57,25 @@
     }
 
     .logo {
+      opacity: .2;
       padding: 1rem;
       margin:0;
-      color: #ccc;
+      /* color: #ccc; */
       display: flex;
       justify-content: space-between;
+    }
+    .logo:hover {
+      opacity: 1;
+    }
+
+    #story-reset {
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      border: 0;
+      color: inherit;
+      background: inherit;
     }
 
     .header .inner,
@@ -59,6 +90,7 @@
       display: flex;
       align-items: end;
     }
+
 
     .content {
       /* background: #ccc; */
@@ -114,10 +146,14 @@
 
   <div class="app">
     <p class="logo">
-      <span>HACKERNEWS - Use the arrow keys (right,left, and down to open comments)</span>
+      <span>
+        <!-- <span ></span>  -->
+        <button id="story-reset" title="back to top story #1">HACKERNEWS</button>
+        - Use the arrow keys (right,left, and down to open comments)</span>
       <span>
         <span id="story-count">0</span> /
         <span id="story-total">425</span>
+        <span id="toggle-darkmode" title="toggle darkmode">&#128161;</span>
       </span>
     </p>
 
