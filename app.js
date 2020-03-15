@@ -7,6 +7,7 @@ const TEXT = document.getElementById('story-text')
 const COUNT = document.getElementById('story-count')
 const TOTAL = document.getElementById('story-total')
 const TOGGLE = document.getElementById('toggle-darkmode')
+const COMMENT_LENGTH = document.getElementById('story-comments-length');
 
 const getStory = async (storyID) => {  
   const story = await fetch(`https://hacker-news.firebaseio.com/v0/item/${storyID}.json?print=pretty`)
@@ -60,7 +61,7 @@ const renderComments = async (commentsArray, elementId = null) => {
   const isNested = elementId ? true : false;
   const COMMENT_PARENT = document.getElementById('story-comments');
   const PARENT = elementId ? document.getElementById(elementId) : COMMENT_PARENT;  
-
+  
   // Remove comments if incoming array is empty.
   if (commentsArray.length === 0) {    
     COMMENT_PARENT.innerHTML = '';
@@ -153,7 +154,10 @@ const renderCurrentStory = async (storyArray) => {
   }
 
   if (hasComments) {  
+    COMMENT_LENGTH.innerHTML = 'Has';
     localStorage.setItem('currentStoryComments', story.kids)
+  } else {
+    COMMENT_LENGTH.innerHTML = 'No';
   }
 }
 
