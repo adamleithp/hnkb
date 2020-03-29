@@ -1,6 +1,6 @@
 
 
-# HackerNews Slideshow
+# HackerNews Keyboard Slideshow
 
 This is a simple web (app?) to show you top stories in hacker news, and navigate using only the keyboard arrows. 
 
