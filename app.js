@@ -194,6 +194,7 @@ const attachEventListeners = (storiesArray) => {
       TITLE.innerHTML = "";
       URL.innerHTML = "";
       TEXT.innerHTML = "Loading...";
+      HN_LINK.href = ``;
       
       // Re-render page on navigation
       renderCurrentStory(stories);
@@ -217,6 +218,7 @@ const attachEventListeners = (storiesArray) => {
       TITLE.innerHTML = "";
       URL.innerHTML = "";
       TEXT.innerHTML = "Loading...";
+      HN_LINK.href = ``;
 
       // Re-render page on navigation      
       renderCurrentStory(stories);
