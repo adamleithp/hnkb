@@ -238,11 +238,17 @@ const attachEventListeners = (storiesArray) => {
 
 
   // Story Reset
-  RESET.onmousedown = (e) => {
+  RESET.onmousedown = async (e) => {
+    TITLE.innerHTML = "Loading";
+    URL.innerHTML = "";
+    TEXT.innerHTML = "";
+    
     localStorage.setItem('currentStoryIndex', 0);
     COUNT.innerHTML = 0;
-    renderCurrentStory(stories);
     renderComments([]);
+
+    const storiesArray = await getTopStories()
+    await renderCurrentStory(storiesArray)    
   }
 
   // Darkmode switch
