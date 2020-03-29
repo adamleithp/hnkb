@@ -177,6 +177,7 @@ const attachEventListeners = (storiesArray) => {
     const totalStoryIndex = localStorage.getItem('topStoriesLength');
     const currentStoryIndex = localStorage.getItem('currentStoryIndex');
     const currentStoryComments = localStorage.getItem('currentStoryComments');
+    const commentsAreRenderedFlag = localStorage.getItem('commentsAreRenderedFlag');
 
     // LEFT
     if (e.keyCode == '37') {
@@ -188,6 +189,7 @@ const attachEventListeners = (storiesArray) => {
       let newIndex = Number(currentStoryIndex) - 1
       localStorage.setItem('currentStoryIndex', newIndex);
       localStorage.removeItem('currentStoryComments');
+      localStorage.removeItem('commentsAreRenderedFlag');
 
       // Update count dom node
       COUNT.innerHTML = newIndex;
@@ -210,8 +212,9 @@ const attachEventListeners = (storiesArray) => {
       
       // Store in memory
       let newIndex = Number(currentStoryIndex) + 1
-      localStorage.removeItem('currentStoryComments');
       localStorage.setItem('currentStoryIndex', newIndex);
+      localStorage.removeItem('currentStoryComments');
+      localStorage.removeItem('commentsAreRenderedFlag');
       
       // Update count dom node
       COUNT.innerHTML = newIndex;
@@ -226,11 +229,10 @@ const attachEventListeners = (storiesArray) => {
     }
 
     // DOWN (render comments)
-    else if (e.keyCode == '40' && currentStoryComments) {
+    else if (e.keyCode == '40' && currentStoryComments && !commentsAreRenderedFlag) {
       const commentsArray = currentStoryComments.split(',')
-      
-      // Re-render page on navigation
       renderComments(commentsArray);
+      localStorage.setItem('commentsAreRenderedFlag', true);
     }
   };
 
@@ -295,6 +297,9 @@ const getTopStories = async () => {
   // Handle darkmode switching, and saving of state.
   const darkmodeStatus = localStorage.getItem('darkmodeStatus');  
   let darkmode = (darkmodeStatus === 'true' ? true : false);
+
+  // Remove flags
+  localStorage.removeItem('commentsAreRenderedFlag');
   
   if (darkmode) {    
     BODY.classList.add('darkmode-on')
