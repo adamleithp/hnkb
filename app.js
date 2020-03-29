@@ -1,5 +1,6 @@
 const loadingElement = document.getElementById('loading')
 const TITLE = document.getElementById('story-title')
+const HN_LINK = document.getElementById('story-in-hackernews')
 const BODY = document.body;
 const RESET = document.getElementById('story-reset')
 const URL = document.getElementById('story-url')
@@ -7,7 +8,6 @@ const TEXT = document.getElementById('story-text')
 const COUNT = document.getElementById('story-count')
 const TOTAL = document.getElementById('story-total')
 const TOGGLE = document.getElementById('toggle-darkmode')
-const COMMENT_LENGTH = document.getElementById('story-comments-length');
 
 
 /**
@@ -141,6 +141,7 @@ const renderCurrentStory = async (storyArray) => {
   
   // Set title html
   TITLE.innerHTML = story.title;
+  HN_LINK.href = `https://news.ycombinator.com/item?id=${story.id}`;
 
   if (hasText) {
     URL.classList.add('hide')
@@ -165,13 +166,6 @@ const renderCurrentStory = async (storyArray) => {
     console.log(
       String(window.location.hash.split('#')[1])
     )
-  }
-
-  if (hasComments) {  
-    COMMENT_LENGTH.innerHTML = 'Has';
-    localStorage.setItem('currentStoryComments', story.kids)
-  } else {
-    COMMENT_LENGTH.innerHTML = 'No';
   }
 }
 

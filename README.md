@@ -17,3 +17,4 @@ The Hackernews API used is found here: [https://github.com/HackerNews/API](Hacke
 - [x] Comment section hint (press down helper below title)
 - [x] Comment number below title. (wont do)
 - [ ] Add index to URL, so when you refresh, you can pass the Url to someone else. Load from URL if index is present.
+- [x] Add "Open in hackernews.com". Example: https://news.ycombinator.com/item?id=22718207 

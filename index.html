@@ -80,7 +80,7 @@
     .hero .inner,
     .content .inner{
       width: 100%;
-      padding: 2rem;
+      padding: 1em 2rem;
     }
     
     .hero {
@@ -98,7 +98,9 @@
       text-align: left;
     }
 
-
+    #story-title {
+      margin-bottom:1em;
+    }
     #story-comments {
       padding: 0;
     }
@@ -171,6 +173,7 @@
     <div class="hero">
       <div class="inner">
         <h1 id="story-title">Loading...</h1>
+        <a id="story-in-hackernews" class="text-helper" href="#">Open in HN</a>
       </div>
     </div>
     
@@ -186,9 +189,7 @@
       </div>
 
       <div class="inner">
-        <p class="text-helper"><span id="story-comments-length">No</span> Comments</p>
-        <ul id="story-comments" class="list-comment">
-        </ul>
+        <ul id="story-comments" class="list-comment"></ul>
       </div>
     </div>
   </div>
