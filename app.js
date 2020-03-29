@@ -9,8 +9,14 @@ const TOTAL = document.getElementById('story-total')
 const TOGGLE = document.getElementById('toggle-darkmode')
 const COMMENT_LENGTH = document.getElementById('story-comments-length');
 
-const getStory = async (storyID) => {  
-  const story = await fetch(`https://hacker-news.firebaseio.com/v0/item/${storyID}.json?print=pretty`)
+
+/**
+ * Get a single story.
+ * @param {number} storyIdNumber - The id of the story
+ * @returns {object} the story object
+ */
+const getStory = async (storyIdNumber) => {  
+  const story = await fetch(`https://hacker-news.firebaseio.com/v0/item/${storyIdNumber}.json?print=pretty`)
     .then((response) => {
       return response.json();
     })
@@ -22,7 +28,11 @@ const getStory = async (storyID) => {
 }
 
 
-
+/**
+ * Build a custom dom node from a comment object.
+ * @param {object} commentObject - The id of the story
+ * @returns {html object} the dom element housing the comment html
+ */
 const buildCommentHTML = (commentObject) => {
   let author = commentObject.by;
   let text = commentObject.text;  
@@ -33,7 +43,6 @@ const buildCommentHTML = (commentObject) => {
 
   // create div
   const parent = document.createElement('div');
-  // div.classList.add('story-comment');
   
   // create author p
   const child1 = document.createElement('p');
@@ -45,22 +54,22 @@ const buildCommentHTML = (commentObject) => {
   child2.innerHTML = text;
 
   // TODO: Fix first childnode of comment (it's always an invalid text string)
-  
   parent.appendChild(child1)
   parent.appendChild(child2)
-    
+
   return parent;
 }
 
 
-
-
-
-
-const renderComments = async (commentsArray, elementId = null) => {    
-  const isNested = elementId ? true : false;
+/**
+ * Render comments tree, handle children of comments as-well.
+ * @param {array} commentsArray - The array of comments ex: [123123123, 123123123]
+ * @param {number} elementIdNumber - The id of the story. Not null, when function recursively calls itself (because it's a child of another comment)
+ */
+const renderComments = async (commentsArray, elementIdNumber = null) => {    
+  const isNested = elementIdNumber ? true : false;
   const COMMENT_PARENT = document.getElementById('story-comments');
-  const PARENT = elementId ? document.getElementById(elementId) : COMMENT_PARENT;  
+  const PARENT = elementIdNumber ? document.getElementById(elementIdNumber) : COMMENT_PARENT;  
   
   // Remove comments if incoming array is empty.
   if (commentsArray.length === 0) {    
@@ -108,6 +117,7 @@ const renderComments = async (commentsArray, elementId = null) => {
       PARENT.appendChild(LIST_ITEM);
     }
 
+    // If this comment has children itself, call parent function again...
     if (comment.kids) {
       // Recursion
       renderComments(comment.kids, comment.id)
@@ -116,6 +126,10 @@ const renderComments = async (commentsArray, elementId = null) => {
 }
 
 
+/**
+ * Render current story, add UX stuff at the same time.
+ * @param {array} storyArray - The array of stories ex: [123123123, 123123123]
+ */
 const renderCurrentStory = async (storyArray) => {
   const currentStoryIndex = localStorage.getItem('currentStoryIndex');
   const currentStoryID = storyArray[currentStoryIndex]
@@ -162,6 +176,10 @@ const renderCurrentStory = async (storyArray) => {
 }
 
 
+/**
+ * Attach event listeners to the document, used for key navigation
+ * @param {array} storyArray - The array of stories ex: [123123123, 123123123], used to call render with accurate data. (didn't want to store in memory)
+ */
 const attachEventListeners = (storiesArray) => {
   const stories = storiesArray;
 
@@ -169,7 +187,6 @@ const attachEventListeners = (storiesArray) => {
     const totalStoryIndex = localStorage.getItem('topStoriesLength');
     const currentStoryIndex = localStorage.getItem('currentStoryIndex');
     const currentStoryComments = localStorage.getItem('currentStoryComments');
-    const commentsAreRenderedFlag = localStorage.getItem('commentsAreRenderedFlag');
     
     // LEFT
     if (e.keyCode == '37') {
@@ -177,16 +194,18 @@ const attachEventListeners = (storiesArray) => {
         return;
       }
       
+      // Store in memory
       let newIndex = Number(currentStoryIndex) - 1
       localStorage.setItem('currentStoryIndex', newIndex);
       localStorage.removeItem('currentStoryComments');
-      localStorage.removeItem('commentsAreRenderedFlag');
+
       // Update count dom node
       COUNT.innerHTML = newIndex;
       TITLE.innerHTML = "";
       URL.innerHTML = "";
       TEXT.innerHTML = "Loading...";
       
+      // Re-render page on navigation
       renderCurrentStory(stories);
       renderComments([]);
     }
@@ -198,28 +217,28 @@ const attachEventListeners = (storiesArray) => {
         return;
       }
       
+      // Store in memory
       let newIndex = Number(currentStoryIndex) + 1
       localStorage.removeItem('currentStoryComments');
-      localStorage.removeItem('commentsAreRenderedFlag');
       localStorage.setItem('currentStoryIndex', newIndex);
+      
       // Update count dom node
       COUNT.innerHTML = newIndex;
       TITLE.innerHTML = "";
       URL.innerHTML = "";
       TEXT.innerHTML = "Loading...";
-            
+
+      // Re-render page on navigation      
       renderCurrentStory(stories);
       renderComments([]);
     }
 
-
     // DOWN (render comments)
-    else if (e.keyCode == '40' && currentStoryComments && !commentsAreRenderedFlag) {
+    else if (e.keyCode == '40' && currentStoryComments) {
       const commentsArray = currentStoryComments.split(',')
       
+      // Re-render page on navigation
       renderComments(commentsArray);
-
-      localStorage.setItem('commentsAreRenderedFlag', true);
     }
   };
 
@@ -245,8 +264,11 @@ const attachEventListeners = (storiesArray) => {
 }
 
 
-
-const getTopStories = async (storyID) => {  
+/**
+ * Get the top stories. This is the first call, and 
+ * @returns {array} the stories array ex: [123123,1231231] 
+ */
+const getTopStories = async () => {  
   const stories = await fetch(`https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty`)
     .then((response) => {
       return response.json();
@@ -263,6 +285,7 @@ const getTopStories = async (storyID) => {
       localStorage.setItem('topStoriesLength', data.length);
       localStorage.setItem('topStories', data);
 
+      // Update count html
       COUNT.innerHTML = currentStoryIndex;
       TOTAL.innerHTML = data.length;
       
@@ -273,9 +296,11 @@ const getTopStories = async (storyID) => {
 }
 
 
-
+/**
+ * Initiation
+ */
 (async function() { 
-  localStorage.removeItem('commentsAreRenderedFlag');
+  // Handle darkmode switching, and saving of state.
   const darkmodeStatus = localStorage.getItem('darkmodeStatus');  
   let darkmode = (darkmodeStatus === 'true' ? true : false);
   
