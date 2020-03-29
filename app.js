@@ -66,7 +66,7 @@ const buildCommentHTML = (commentObject) => {
  * @param {array} commentsArray - The array of comments ex: [123123123, 123123123]
  * @param {number} elementIdNumber - The id of the story. Not null, when function recursively calls itself (because it's a child of another comment)
  */
-const renderComments = async (commentsArray, elementIdNumber = null) => {    
+const renderComments = async (commentsArray, elementIdNumber = null) => { 
   const isNested = elementIdNumber ? true : false;
   const COMMENT_PARENT = document.getElementById('story-comments');
   const PARENT = elementIdNumber ? document.getElementById(elementIdNumber) : COMMENT_PARENT;  
@@ -158,14 +158,10 @@ const renderCurrentStory = async (storyArray) => {
     URL.href = content;
     URL.classList.remove('hide')
     URL.focus();
+  }
 
-    // Change Hash, removes browser url floaty box too.
-    window.location.hash = content;
-    
-    // Keep for the haxxers to copy.
-    console.log(
-      String(window.location.hash.split('#')[1])
-    )
+  if (hasComments) {  
+    localStorage.setItem('currentStoryComments', story.kids)
   }
 }
 
@@ -181,7 +177,7 @@ const attachEventListeners = (storiesArray) => {
     const totalStoryIndex = localStorage.getItem('topStoriesLength');
     const currentStoryIndex = localStorage.getItem('currentStoryIndex');
     const currentStoryComments = localStorage.getItem('currentStoryComments');
-    
+
     // LEFT
     if (e.keyCode == '37') {
       if (currentStoryIndex < 1) {        
